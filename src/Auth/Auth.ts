@@ -6,7 +6,7 @@ import { blocklist } from "../server";
 
 const SALT_ROUNDS = 8
 const SECRET_KEY = "supersecret"
-const EXPIRATION = '5 hours'
+const EXPIRATION = '1 hour'
 
 export async function hasher(rawPassword: string) {
     return await hash(rawPassword, SALT_ROUNDS)
