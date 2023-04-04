@@ -21,6 +21,7 @@ export default class Blocklist {
         return this.list.has(token)
     }
     removeLast() {
+        if (this.list.size === 0) return;
         const lastElement = this.order.tail;
         this.list.delete(lastElement)
         this.order.dequeue()
