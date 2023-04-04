@@ -25,9 +25,28 @@ export class UserService extends Service {
         }
     }
 
+    public async setUser(user: User) {
+        try {
+            const query = `UPDATE ${this.mainTable} SET email=(?), password=(?), first_name=(?), last_name=(?) WHERE username=(?)`
+            return new Promise<boolean>((resolve, reject) => {
+                this.dbClient.run(query, [user.email, user.password, user.firstName, user.lastName, user.username], (err) => {
+                    if (err) {
+                        console.error(err)
+                        reject(false)
+                        throw err
+                    }
+                    resolve(true)
+                })
+            })
+        } catch (err) {
+            return new DatabaseInternalError(`Error when try to update user: ${user.username}. Error: ${err}`)
+        }
+    }
+
     public async login(username: string, password: string) {
         try {
             const user = await this.getUser(username)
+            password = await hasher(password)
             if (comparePassword(password, user.password)) {
                 throw new ObjectNotFound("Username or password are incorrect")
             }
@@ -40,9 +59,10 @@ export class UserService extends Service {
 
     public async register(user: User) {
         try {
+            const hashedPassword = await hasher(user.password)
             const query = `INSERT INTO user (username, email, first_name, last_name, profile_img, password) VALUES (?,?,?,?,?,?)`;
             return new Promise<boolean>((resolve, reject) => {
-                this.dbClient.run(query, [user.username, user.email, user.firstName, user.lastName, user.profileImage, hasher(user.password)],
+                this.dbClient.run(query, [user.username, user.email, user.firstName, user.lastName, user.profileImage, hashedPassword],
                     (error) => {
                         if (error !== null) {
                             console.error("Not possible to register user: ", user.username)

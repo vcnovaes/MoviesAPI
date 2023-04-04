@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { genarateToken, invalidateToken } from "../Auth/Auth";
+import { genarateToken, hasher, invalidateToken } from "../Auth/Auth";
 import { HTTPError, User } from "../types";
 import { UserService } from "./UserService";
 export class UserController {
@@ -11,7 +11,6 @@ export class UserController {
         try {
             const user = await (new UserService).login(username, password)
 
-            console.info(user);
             if (user !== undefined) {
                 const token = genarateToken(user)
                 res.status(200).json(token)
@@ -34,6 +33,7 @@ export class UserController {
             const user = (obj as User)
             return user
         } catch (error) {
+            console.info(error)
             const httpError: HTTPError = {
                 code: 400,
                 message: "Invalid request"
@@ -76,5 +76,24 @@ export class UserController {
         } else {
             res.send(400).send("Token not provided")
         }
+    }
+
+    public static async editUser(req: Request, res: Response) {
+        try {
+            let user = UserController.validateUserData(req.body)
+            user.password = await hasher(user.password)
+            const success = await (new UserService()).setUser(user)
+            console.info(success)
+            if (success) {
+                res.status(200).send("User data was updated")
+                return
+            }
+            throw Error("Something wrong happened")
+        } catch (err) {
+            let code = (err as any).code
+            if (code === undefined) code = 500
+            res.status(code).send(err)
+        }
+
     }
 }

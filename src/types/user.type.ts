@@ -4,6 +4,6 @@ export interface User {
     password: string,
     lastName: string,
     firstName: string,
-    confirmedEmail: boolean,
-    profileImage: Blob
+    confirmedEmail?: boolean,
+    profileImage?: Blob
 }
