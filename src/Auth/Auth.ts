@@ -2,7 +2,7 @@ import { hash, compareSync } from "bcrypt"
 import { User } from "../types";
 import { JwtPayload, sign, verify } from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
-import { blocklist } from "../server";
+import { activeList, blocklist } from "../server";
 
 const SALT_ROUNDS = 8
 const SECRET_KEY = "supersecret"
@@ -17,12 +17,15 @@ export function comparePassword(rawPassword: string, hashedPassword: string) {
 }
 
 export function genarateToken(user: User) {
+
+    const token = sign({ _id: user.username, email: user.email }, SECRET_KEY, {
+        expiresIn: EXPIRATION
+    })
+    activeList.add(token, user.username)
     return {
         expiration: EXPIRATION,
         user: user.username,
-        token: sign({ _id: user.username, email: user.email }, SECRET_KEY, {
-            expiresIn: EXPIRATION,
-        }),
+        token: token,
         date: (new Date()).toISOString()
     }
 }
@@ -32,6 +35,10 @@ export interface CustomRequest extends Request {
     token: string | JwtPayload;
 }
 
+export async function extraInfo(req: Request) {
+    const token = req.header('Authorization')?.replace('Bearer ', '')
+
+}
 export async function authMiddleware(req: Request, res: Response, next: NextFunction) {
     try {
         const token = req.header('Authorization')?.replace('Bearer ', '')
@@ -53,7 +60,14 @@ export function invalidateToken(req: Request) {
     const token = req.header('Authorization')?.replace('Bearer ', '')
     if (token !== undefined) {
         blocklist.add(token)
+        activeList.remove(token)
         return true;
     }
     return false;
+}
+
+export function getUsernameByToken(req: Request) {
+    const token = req.header('Authorization')?.replace('Bearer ', '')
+    if (token)
+        return activeList.getUsername(token)
 }
