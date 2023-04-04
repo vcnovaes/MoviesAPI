@@ -10,7 +10,7 @@ export class UserService extends Service {
     constructor() {
         super("user", new DatabaseClient)
     }
-    private async getUser(username: string) {
+    public async getUser(username: string) {
         try {
             const user: User = await this.dbClient.getObject(this.mainTable, this.primaryKey, username)
             if (!user) {
