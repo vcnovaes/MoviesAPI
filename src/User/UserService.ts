@@ -1,19 +1,18 @@
 import { comparePassword, hasher } from "../Auth/Auth";
+import { Service } from "../Common/Service";
 import { DatabaseClient } from "../Database/DatabaseClient";
 import { DatabaseInternalError, ObjectNotFound } from "../Database/Exceptions";
 import { User } from "../types";
 
-export class UserService {
+export class UserService extends Service {
 
-    dbClient: DatabaseClient
-    tableName = "user"
     primaryKey = "username"
     constructor() {
-        this.dbClient = new DatabaseClient()
+        super("user", new DatabaseClient)
     }
     private async getUser(username: string) {
         try {
-            const user: User = await this.dbClient.getObject(this.tableName, this.primaryKey, username)
+            const user: User = await this.dbClient.getObject(this.mainTable, this.primaryKey, username)
             if (!user) {
                 throw new ObjectNotFound(`Not possible to found username  ${username}`)
             }
