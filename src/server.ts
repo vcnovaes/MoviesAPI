@@ -11,6 +11,9 @@ const app = express();
 
 export const blocklist = Blocklist.createBlocklist()
 
+setTimeout(() => blocklist.removeLast(), (1000) * 60 * 60)
+
+
 config()
 
 app.use(express.json())
