@@ -1,4 +1,5 @@
 import { Database } from "sqlite3";
+import { User } from "../types";
 import { DatabaseInternalError, InvalidDatabaseURL } from "./Exceptions";
 
 export class DatabaseClient extends Database {
@@ -29,7 +30,16 @@ export class DatabaseClient extends Database {
                 if (error) {
                     reject(error)
                 }
-                resolve(data)
+                const user: User = {
+                    username: (data as any).username,
+                    email: (data as any).email,
+                    password: (data as any).password,
+                    firstName: (data as any).first_name,
+                    lastName: (data as any).last_name,
+                    confirmedEmail: ((data as any).confirmed_email == 1),
+                    profileImage: (data as any).profile_img
+                }
+                resolve(user)
             }
         ))
     }
