@@ -5,7 +5,7 @@ import { UserRouter } from './User';
 
 import { config } from 'dotenv';
 import { authMiddleware } from './Auth';
-import { MoviesRouter } from './Movies/MoviesRouter';
+import { MoviesRouter } from './Movies';
 import Blocklist from './Auth/Blocklist';
 import ActiveList from './Auth/Active';
 const app = express();
@@ -22,6 +22,6 @@ app.use(express.json())
 
 const router = express.Router()
 app.use("/", UserRouter)
+app.use("/movies", authMiddleware, MoviesRouter)
 
-app.use("/auth/", authMiddleware, MoviesRouter)
 app.listen(3333, () => 'server running on port 3333')
