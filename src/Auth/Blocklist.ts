@@ -22,7 +22,7 @@ export default class Blocklist {
     }
     removeLast() {
         if (this.list.size === 0) return;
-        const lastElement = this.order.tail;
+        const lastElement = this.order.head;
         this.list.delete(lastElement)
         this.order.dequeue()
     }
