@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import { genarateToken, hasher, invalidateToken } from "../Auth/Auth";
+import { genarateToken, getUsernameByToken, hasher, invalidateToken } from "../Auth/Auth";
+import { sendEmailConfirmation, validateIncomeConfirmationToken } from "../Misc/Email/EmailConfirmation";
 import { HTTPError, User } from "../types";
 import { UserService } from "./UserService";
 export class UserController {
@@ -81,6 +82,10 @@ export class UserController {
     public static async editUser(req: Request, res: Response) {
         try {
             let user = UserController.validateUserData(req.body)
+            if (getUsernameByToken(req) !== user.username) {
+                res.status(401).send("You can not edit this user")
+                return;
+            }
             user.password = await hasher(user.password)
             const success = await (new UserService()).setUser(user)
             console.info(success)
@@ -95,5 +100,58 @@ export class UserController {
             res.status(code).send(err)
         }
 
+    }
+
+    public static async sendEmailConfirmation(req: Request, res: Response) {
+        try {
+            const username = getUsernameByToken(req)
+            if (!username) {
+                res.status(401).send("There's something wrong with your token")
+                return
+            }
+            const user = await (new UserService()).getUser(username)
+            if (user.confirmedEmail) {
+                res.status(400).send("This email is already validated")
+                return;
+            }
+            await sendEmailConfirmation(user.email)
+            res.status(200).send(`Email send it to ${user.email}`)
+        } catch (err) {
+            res.status((err as any).code ?? 500).send((err as any).message)
+            return
+        }
+    }
+
+    public static async validateEmailConfirmationToken(req: Request, res: Response) {
+        try {
+            const username = getUsernameByToken(req)
+            if (!username) {
+                res.status(401).send("Something's wrong with your token")
+                return
+            }
+            let user = await (new UserService()).getUser(username)
+            const { emailToken } = req.body
+            if (!emailToken) {
+                res.send(400).send("emailToken field was not send it")
+            }
+            const valid = validateIncomeConfirmationToken(user.email, (emailToken as string))
+            if (valid) {
+                user.confirmedEmail = true
+                const updated = await (new UserService()).confirmEmail(user)
+                if (updated) {
+                    res.status(200).send("Email confirmed with success")
+                    return
+                } else {
+                    res.status(500).send("Something went wrong")
+                    return;
+                }
+            } else {
+                res.status(400).send("Invalid token")
+                return
+            }
+        } catch (err) {
+            res.status((err as any).code ?? 500).send(err)
+            return
+        }
     }
 }
