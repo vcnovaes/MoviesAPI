@@ -27,7 +27,7 @@ Next:
 1. Instale as dependências, execute o compando abaixo na raiz do repositório
     `npm install`
 2. Builde o projeto usando `npm run tsc`
-3. Execute usando `npm start`
+3. Execute usando `npm run dev`
 
 # Documentation
 [API Docs](https://documenter.getpostman.com/view/21314939/2s93RXsAHX)
