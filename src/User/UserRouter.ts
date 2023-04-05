@@ -10,4 +10,4 @@ export default Router()
     .post('/send-email', authMiddleware, UserController.sendEmailConfirmation)
     .post('/validate-email', authMiddleware, UserController.validateEmailConfirmationToken)
     .get('/:user', authMiddleware, UserController.getUserData)
-
+    .put('/change-password', authMiddleware)
