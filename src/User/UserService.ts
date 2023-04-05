@@ -25,6 +25,24 @@ export class UserService extends Service {
         }
     }
 
+    public async modifyPassword(username: string, password: string) {
+
+        try {
+            const query = `UPDATE ${this.mainTable} SET password=(?) WHERE username=(?)`
+            return new Promise<boolean>((resolve, reject) => {
+                this.dbClient.run(query, [password, username], (err) => {
+                    if (err) {
+                        console.error(err)
+                        reject(false)
+                        throw err
+                    }
+                    resolve(true)
+                })
+            })
+        } catch (err) {
+            return new DatabaseInternalError(`Error when try to update user: ${username}. Error: ${err}`)
+        }
+    }
     public async confirmEmail(user: User) {
         try {
             const query = `UPDATE ${this.mainTable} SET confirmed_email=1 WHERE username=(?)`
@@ -42,11 +60,11 @@ export class UserService extends Service {
             return new DatabaseInternalError(`Error when try to update user: ${user.username}. Error: ${err}`)
         }
     }
-    public async setUser(user: User) {
+    public async updateUserData(user: User) {
         try {
-            const query = `UPDATE ${this.mainTable} SET email=(?), password=(?), first_name=(?), last_name=(?) WHERE username=(?)`
+            const query = `UPDATE ${this.mainTable} SET email=(?), first_name=(?), last_name=(?) WHERE username=(?)`
             return new Promise<boolean>((resolve, reject) => {
-                this.dbClient.run(query, [user.email, user.password, user.firstName, user.lastName, user.username], (err) => {
+                this.dbClient.run(query, [user.email, user.firstName, user.lastName, user.username], (err) => {
                     if (err) {
                         console.error(err)
                         reject(false)

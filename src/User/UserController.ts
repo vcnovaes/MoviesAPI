@@ -86,8 +86,7 @@ export class UserController {
                 res.status(401).send("You can not edit this user")
                 return;
             }
-            user.password = await hasher(user.password)
-            const success = await (new UserService()).setUser(user)
+            const success = await (new UserService()).updateUserData(user)
             console.info(success)
             if (success) {
                 res.status(200).send("User data was updated")
@@ -99,9 +98,43 @@ export class UserController {
             if (code === undefined) code = 500
             res.status(code).send(err)
         }
-
     }
 
+    public static async getUserData(req: Request, res: Response) {
+        const username = req.params.user
+        if (!username) {
+            res.sendStatus(400)
+            return
+        }
+        try {
+            const user = await (new UserService()).getUser(username)
+            if (!user) { res.sendStatus(404); return }
+            res.status(200).send({
+                username: user.username,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                profileImage: user.profileImage,
+                email: user.email,
+                confirmedEmail: user.confirmedEmail
+            })
+        } catch (err) {
+            res.status((err as any).code ?? 500).send(err)
+            return;
+        }
+    }
+
+    public static async modifyPassword(req: Request, res: Response) {
+        /**
+         *  Work in progress
+         * 
+         * 
+         */
+        const { currentPassword, newPassword } = req.body
+        if (!currentPassword || !newPassword) {
+            res.sendStatus(400)
+            return
+        }
+    }
     public static async sendEmailConfirmation(req: Request, res: Response) {
         try {
             const username = getUsernameByToken(req)

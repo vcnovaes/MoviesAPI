@@ -9,5 +9,5 @@ export default Router()
     .put('/edit', authMiddleware, UserController.editUser)
     .post('/send-email', authMiddleware, UserController.sendEmailConfirmation)
     .post('/validate-email', authMiddleware, UserController.validateEmailConfirmationToken)
-
+    .get('/:user', authMiddleware, UserController.getUserData)
 
