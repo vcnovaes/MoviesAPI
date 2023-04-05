@@ -7,5 +7,7 @@ export default Router()
     .post('/register', UserController.register)
     .post('/logout', UserController.logout)
     .put('/edit', authMiddleware, UserController.editUser)
+    .post('/send-email', authMiddleware, UserController.sendEmailConfirmation)
+    .post('/validate-email', authMiddleware, UserController.validateEmailConfirmationToken)
 
 

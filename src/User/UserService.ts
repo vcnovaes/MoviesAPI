@@ -25,6 +25,23 @@ export class UserService extends Service {
         }
     }
 
+    public async confirmEmail(user: User) {
+        try {
+            const query = `UPDATE ${this.mainTable} SET confirmed_email=1 WHERE username=(?)`
+            return new Promise<boolean>((resolve, reject) => {
+                this.dbClient.run(query, [user.username], (err) => {
+                    if (err) {
+                        console.error(err)
+                        reject(false)
+                        throw err
+                    }
+                    resolve(true)
+                })
+            })
+        } catch (err) {
+            return new DatabaseInternalError(`Error when try to update user: ${user.username}. Error: ${err}`)
+        }
+    }
     public async setUser(user: User) {
         try {
             const query = `UPDATE ${this.mainTable} SET email=(?), password=(?), first_name=(?), last_name=(?) WHERE username=(?)`
