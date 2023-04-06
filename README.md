@@ -34,4 +34,4 @@ Para testar execute `npm run test`
 
 # Documentation
 [API Docs](https://documenter.getpostman.com/view/21314939/2s93RXsAHX)
-![User router schema](/assets/MoviesAPI.drawio.png)
+![User router schema](/assets/MoviesAPI1.drawio.png)
