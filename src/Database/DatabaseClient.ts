@@ -30,6 +30,7 @@ export class DatabaseClient extends Database {
                 if (error) {
                     reject(error)
                 }
+                if (!data) { resolve(data); return }
                 const user: User = {
                     username: (data as any).username,
                     email: (data as any).email,

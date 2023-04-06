@@ -11,6 +11,7 @@ import ActiveList from './Auth/Active';
 import { PrivacyPolicyRouter } from './Misc';
 import { sendEmailConfirmation } from './Misc/Email/EmailConfirmation';
 import { EmailCache } from './Misc/Email/EmailCache';
+import { serve, setup } from 'swagger-ui-express';
 const app = express();
 
 export const blocklist = Blocklist.createBlocklist()
@@ -25,20 +26,10 @@ setTimeout(() => {
 
 
 config()
-
 app.use(express.json())
 
 const router = express.Router()
 app.use("/", UserRouter)
 app.use("/movies", authMiddleware, MoviesRouter)
 app.use("/", PrivacyPolicyRouter)
-app.get("/email", async (req, res) => {
-    const { email } = req.body
-    try {
-        await sendEmailConfirmation(email)
-        res.sendStatus(200)
-    } catch (error) {
-        res.status(500).send(error)
-    }
-})
 app.listen(3033, () => 'server running on port 3033')

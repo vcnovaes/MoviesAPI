@@ -20,9 +20,17 @@ export class UserService extends Service {
         } catch (error) {
             console.error(error)
             throw error
-        } finally {
-            this.dbClient.close()
         }
+    }
+    public async eraseUser(username: string) {
+        return new Promise<void>((reject) => {
+            this.dbClient.run(`DELETE FROM user WHERE username=(?)`, [username],
+                (error) => {
+                    if (error)
+                        reject()
+                }
+            )
+        })
     }
 
     public async modifyPassword(username: string, password: string) {
