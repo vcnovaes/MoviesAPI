@@ -1,6 +1,6 @@
 # API Requirements
 - [x] endpoint para cadastro de usuários `/register`
-- [x] endpoint de termos de uso e polítcas de privacidade `/privacy-policy`
+- [x] endpoint de termos de uso e políticas de privacidade `/privacy-policy`
 - [x] endpoint de login `/login`
 - [x] endpoint de logout `/logout`
 - [x] endpoint com lista de items padrão `/movies`
@@ -19,7 +19,7 @@
 
 Next:
 - [ ] Endpoint para alterar senha com a confirmação da atual
-- [ ] Testes unitários
+- [x] Testes unitários (para serviços de Usuário e Movies)
 - [ ] Documentação usando OpenAPI
 
 
@@ -28,6 +28,9 @@ Next:
     `npm install`
 2. Builde o projeto usando `npm run tsc`
 3. Execute usando `npm run dev`
+
+# Testes:
+Para testar execute `npm run test`
 
 # Documentation
 [API Docs](https://documenter.getpostman.com/view/21314939/2s93RXsAHX)
