@@ -9,10 +9,10 @@ export class DatabaseClient extends Database {
         }
         console.info(databaseURL)
         if (databaseURL === undefined) {
-            throw new InvalidDatabaseURL(`Income URL: ${databaseURL}`)
+            console.error(new InvalidDatabaseURL(`Income URL: ${databaseURL}`))
         }
         try {
-            super(databaseURL)
+            super(databaseURL ?? "")
         } catch (error) {
             if (error instanceof Error)
                 throw new DatabaseInternalError(error.message)

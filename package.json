@@ -8,7 +8,7 @@
     "start": "node dist/server.js",
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/server.js\"",
     "swagger-autogen": "node swagger.js",
-    "test": "jest --detectOpenHandles"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
