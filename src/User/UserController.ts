@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { genarateToken, getUsernameByToken, hasher, invalidateToken } from "../Auth/Auth";
+import { generateToken, getUsernameByToken, hasher, invalidateToken } from "../Auth/Auth";
 import { sendEmailConfirmation, validateIncomeConfirmationToken } from "../Misc/Email/EmailConfirmation";
 import { HTTPError, User } from "../types";
 import { UserService } from "./UserService";
@@ -13,7 +13,7 @@ export class UserController {
             const user = await (new UserService).login(username, password)
 
             if (user !== undefined) {
-                const token = genarateToken(user)
+                const token = generateToken(user)
                 res.status(200).json(token)
                 return
             }

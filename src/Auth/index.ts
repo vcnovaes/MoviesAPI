@@ -1,2 +1,2 @@
-import { hasher, genarateToken, comparePassword, authMiddleware } from "./Auth"
-export { hasher, genarateToken, comparePassword, authMiddleware }
+import { hasher, generateToken, comparePassword, authMiddleware } from "./Auth"
+export { hasher, generateToken as genarateToken, comparePassword, authMiddleware }

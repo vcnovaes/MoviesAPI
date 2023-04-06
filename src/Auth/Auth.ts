@@ -16,7 +16,7 @@ export function comparePassword(rawPassword: string, hashedPassword: string) {
     return compareSync(rawPassword, hashedPassword)
 }
 
-export function genarateToken(user: User) {
+export function generateToken(user: User) {
 
     const token = sign({ _id: user.username, email: user.email }, SECRET_KEY, {
         expiresIn: EXPIRATION
